@@ -12,8 +12,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.BDDAssertions.then;
