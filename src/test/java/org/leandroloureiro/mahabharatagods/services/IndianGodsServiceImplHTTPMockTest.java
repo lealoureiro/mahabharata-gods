@@ -4,8 +4,6 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.RestTemplate;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
@@ -14,10 +12,9 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.BDDAssertions.then;
 
-@ExtendWith(MockitoExtension.class)
 class IndianGodsServiceImplHTTPMockTest {
 
-    private IndianGodsServiceImpl service = new IndianGodsServiceImpl(new RestTemplate(), "localhost:8090");
+    private IndianGodsService service = new IndianGodsServiceImpl(new RestTemplate(), "localhost:8090");
 
     private WireMockServer wireMockServer;
 
@@ -41,9 +38,9 @@ class IndianGodsServiceImplHTTPMockTest {
                         .withBodyFile("indian.json")));
 
 
-        var  godList = service.getGodList();
+        final var godList = service.getGodList();
 
-        var result = godList.join();
+        final var result = godList.join();
 
         then(result.isPresent()).isTrue();
 

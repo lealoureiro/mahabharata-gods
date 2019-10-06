@@ -17,6 +17,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * {@inheritDoc}
+ */
 @Service
 public class IndianGodsServiceImpl implements IndianGodsService {
 
@@ -31,6 +34,9 @@ public class IndianGodsServiceImpl implements IndianGodsService {
         this.hostname = hostname;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public CompletableFuture<Optional<List<String>>> getGodList() {
 
@@ -38,16 +44,16 @@ public class IndianGodsServiceImpl implements IndianGodsService {
 
             final ParameterizedTypeReference<List<String>> type = new ParameterizedTypeReference<>() {};
 
-            var either = getURI(hostname);
+            final var either = getURI(hostname);
 
             if (either.isRight()) {
-                var response = client.exchange(
+                return client.exchange(
                         either.get(),
                         HttpMethod.GET,
                         new HttpEntity<>(type),
                         type
-                );
-                return response.getBody();
+                ).getBody();
+
             } else {
                 return new ArrayList<String>();
             }
@@ -64,11 +70,11 @@ public class IndianGodsServiceImpl implements IndianGodsService {
         });
     }
 
-    private Either<String, URI> getURI(final String address) {
+    private static Either<String, URI> getURI(final String address) {
 
         try {
 
-            var baseUrl = "http://" + address + "/jabrena/latency-problems/indian";
+            final var baseUrl = "http://" + address + "/jabrena/latency-problems/indian";
 
             return Either.right(new URI(baseUrl));
 
