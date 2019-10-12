@@ -7,6 +7,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
+import java.util.concurrent.Executors;
 
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.mockito.Mockito.mock;
@@ -28,7 +29,9 @@ class MahabharataDataSourceImplTest {
 
         restTemplate = mock(RestTemplate.class);
 
-        service = new MahabharataDataSourceImpl(restTemplate, "localhost:8080");
+        final var executor = Executors.newSingleThreadExecutor();
+
+        service = new MahabharataDataSourceImpl(restTemplate, executor, "localhost:8080");
 
     }
 

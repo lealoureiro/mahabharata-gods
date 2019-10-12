@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 /**
  * {@inheritDoc}
@@ -26,11 +27,12 @@ public class IndianGodsServiceImpl implements IndianGodsService {
     private static final Logger LOG = LoggerFactory.getLogger(IndianGodsServiceImpl.class);
 
     private final RestTemplate client;
+    private final Executor apiCallExecutor;
     private final String hostname;
 
-    public IndianGodsServiceImpl(final RestTemplate client,
-                                 final String hostname) {
+    IndianGodsServiceImpl(final RestTemplate client, final Executor apiCallExecutor, final String hostname) {
         this.client = client;
+        this.apiCallExecutor = apiCallExecutor;
         this.hostname = hostname;
     }
 
@@ -42,7 +44,8 @@ public class IndianGodsServiceImpl implements IndianGodsService {
 
         return CompletableFuture.supplyAsync(() -> {
 
-            final ParameterizedTypeReference<List<String>> type = new ParameterizedTypeReference<>() {};
+            final ParameterizedTypeReference<List<String>> type = new ParameterizedTypeReference<>() {
+            };
 
             final var either = getURI(hostname);
 
@@ -58,7 +61,7 @@ public class IndianGodsServiceImpl implements IndianGodsService {
                 return new ArrayList<String>();
             }
 
-        }).handle((response, e) -> {
+        }, apiCallExecutor).handle((response, e) -> {
             if (Objects.isNull(e)) {
                 if (response.isEmpty()) {
                     return Optional.empty();

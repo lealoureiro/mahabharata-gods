@@ -12,6 +12,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.BDDAssertions.then;
@@ -32,7 +33,9 @@ class IndianGodsServiceImplTest {
 
         restTemplate = mock(RestTemplate.class);
 
-        service = new IndianGodsServiceImpl(restTemplate, "localhost:8080");
+        final var executor = Executors.newSingleThreadExecutor();
+
+        service = new IndianGodsServiceImpl(restTemplate, executor, "localhost:8080");
 
     }
 
@@ -43,7 +46,8 @@ class IndianGodsServiceImplTest {
 
         var response = ResponseEntity.ok(asList("God1", "God2"));
 
-        final ParameterizedTypeReference<List<String>> type = new ParameterizedTypeReference<>() {};
+        final ParameterizedTypeReference<List<String>> type = new ParameterizedTypeReference<>() {
+        };
 
         when(restTemplate.exchange(uri, HttpMethod.GET, new HttpEntity<>(type), type)).thenReturn(response);
 

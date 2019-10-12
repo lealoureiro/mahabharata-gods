@@ -11,6 +11,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 /**
  * {@inheritDoc}
@@ -21,13 +22,18 @@ public class MahabharataDataSourceImpl implements MahabharataDataSource {
     private static final Logger LOG = LoggerFactory.getLogger(MahabharataDataSourceImpl.class);
 
     private final RestTemplate restTemplate;
+    private final Executor apiCallExecutor;
     private final String hostname;
 
-    public MahabharataDataSourceImpl(final RestTemplate restTemplate, final String hostname) {
+    public MahabharataDataSourceImpl(final RestTemplate restTemplate, final Executor apiCallExecutor, final String hostname) {
         this.restTemplate = restTemplate;
+        this.apiCallExecutor = apiCallExecutor;
         this.hostname = hostname;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public CompletableFuture<String> getMahabharataBook() {
 
@@ -45,7 +51,7 @@ public class MahabharataDataSourceImpl implements MahabharataDataSource {
 
             }
 
-        }).handle((response, e) -> {
+        }, apiCallExecutor).handle((response, e) -> {
             if (Objects.isNull(e)) {
                 return response;
             } else {
