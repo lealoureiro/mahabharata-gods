@@ -39,10 +39,9 @@ class MahabharataDataSourceImplHTTPMockTest {
 
         final var godList = service.getMahabharataBook();
 
-        final var result = godList.join();
+        final String result = godList.join();
 
-        then(result).isEqualTo("BookContent\n");
-
+        then(result).startsWith("Mahabharata");
 
     }
 
