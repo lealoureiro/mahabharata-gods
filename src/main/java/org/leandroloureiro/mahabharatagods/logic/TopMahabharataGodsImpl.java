@@ -5,6 +5,8 @@ import org.leandroloureiro.mahabharatagods.model.God;
 import org.leandroloureiro.mahabharatagods.services.IndianGodService;
 import org.leandroloureiro.mahabharatagods.services.IndianGodsService;
 import org.leandroloureiro.mahabharatagods.services.MahabharataDataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -23,6 +25,7 @@ import static java.util.stream.Collectors.toMap;
 @Service
 public class TopMahabharataGodsImpl implements TopMahabharataGods {
 
+    private static final Logger LOG = LoggerFactory.getLogger(TopMahabharataGodsImpl.class);
 
     private final IndianGodsService indianGodsService;
     private final IndianGodService indianGodService;
@@ -75,7 +78,10 @@ public class TopMahabharataGodsImpl implements TopMahabharataGods {
     }
 
     private CompletableFuture<Integer> countAppearances(final String god, final String mahabharata) {
-        return CompletableFuture.supplyAsync(() -> StringUtils.countMatches(mahabharata, god));
+        return CompletableFuture.supplyAsync(() -> {
+            LOG.info("Calculating the appearances for god: {}", god);
+            return StringUtils.countMatches(mahabharata, god);
+        });
     }
 
 }

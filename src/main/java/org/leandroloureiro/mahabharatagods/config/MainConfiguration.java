@@ -1,5 +1,6 @@
 package org.leandroloureiro.mahabharatagods.config;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,7 +37,12 @@ public class MainConfiguration {
 
     @Bean
     public Executor apiCallExecutor() {
-        return Executors.newFixedThreadPool(10, r -> new Thread(r, "API Call Worker Thread"));
+
+        final var factory = new ThreadFactoryBuilder()
+                .setNameFormat("API Call Worker Thread %d")
+                .build();
+
+        return Executors.newFixedThreadPool(10, factory);
     }
 
 
