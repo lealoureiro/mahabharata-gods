@@ -21,6 +21,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <vavr.version>0.10.2</vavr.version>
+        <commons-lang3.version>3.9</commons-lang3.version>
         <assertj-core.version>3.13.1</assertj-core.version>
         <rest-assured.version>4.0.0</rest-assured.version>
         <junit-platform.version>5.5.2</junit-platform.version>
@@ -56,6 +57,11 @@
             <groupId>io.vavr</groupId>
             <artifactId>vavr</artifactId>
             <version>${vavr.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang3.version}</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>

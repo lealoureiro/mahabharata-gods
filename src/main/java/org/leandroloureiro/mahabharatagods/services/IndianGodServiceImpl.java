@@ -3,10 +3,13 @@ package org.leandroloureiro.mahabharatagods.services;
 import io.vavr.control.Either;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -14,18 +17,21 @@ import java.util.concurrent.Executor;
 /**
  * Check if Indian God is valid against Wikipedia
  */
+@Service
 public class IndianGodServiceImpl implements IndianGodService {
 
     private static final Logger LOG = LoggerFactory.getLogger(IndianGodServiceImpl.class);
 
     private final RestTemplate restTemplate;
     private final Executor apiCallExecutor;
-    private final String hostname;
+    private final String indianGodServiceHostname;
 
-    IndianGodServiceImpl(final RestTemplate restTemplate, final Executor apiCallExecutor, final String hostname) {
+    IndianGodServiceImpl(final RestTemplate restTemplate,
+                         final Executor apiCallExecutor,
+                         final String indianGodServiceHostname) {
         this.restTemplate = restTemplate;
         this.apiCallExecutor = apiCallExecutor;
-        this.hostname = hostname;
+        this.indianGodServiceHostname = indianGodServiceHostname;
     }
 
     /**
@@ -35,7 +41,7 @@ public class IndianGodServiceImpl implements IndianGodService {
     public CompletableFuture<Boolean> isValidIndianGod(final String indianGod) {
         return CompletableFuture.supplyAsync(() -> {
 
-            final var uri = getURI(hostname, indianGod);
+            final var uri = getURI(indianGodServiceHostname, indianGod);
 
             if (uri.isRight()) {
 
@@ -56,7 +62,7 @@ public class IndianGodServiceImpl implements IndianGodService {
 
         try {
 
-            final var baseUrl = "http://" + address + "/wiki/" + indianGod;
+            final var baseUrl = "http://" + address + "/wiki/" + URLEncoder.encode(indianGod, StandardCharsets.UTF_8);
 
             return Either.right(new URI(baseUrl));
 

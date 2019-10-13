@@ -23,12 +23,14 @@ public class MahabharataDataSourceImpl implements MahabharataDataSource {
 
     private final RestTemplate restTemplate;
     private final Executor apiCallExecutor;
-    private final String hostname;
+    private final String mahabharataDataSourceHostname;
 
-    public MahabharataDataSourceImpl(final RestTemplate restTemplate, final Executor apiCallExecutor, final String hostname) {
+    public MahabharataDataSourceImpl(final RestTemplate restTemplate,
+                                     final Executor apiCallExecutor,
+                                     final String mahabharataDataSourceHostname) {
         this.restTemplate = restTemplate;
         this.apiCallExecutor = apiCallExecutor;
-        this.hostname = hostname;
+        this.mahabharataDataSourceHostname = mahabharataDataSourceHostname;
     }
 
     /**
@@ -39,7 +41,7 @@ public class MahabharataDataSourceImpl implements MahabharataDataSource {
 
         return CompletableFuture.supplyAsync(() -> {
 
-            final var uri = getURI(hostname);
+            final var uri = getURI(mahabharataDataSourceHostname);
 
             if (uri.isRight()) {
 

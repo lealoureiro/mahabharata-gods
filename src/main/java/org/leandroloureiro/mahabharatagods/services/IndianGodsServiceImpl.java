@@ -28,12 +28,14 @@ public class IndianGodsServiceImpl implements IndianGodsService {
 
     private final RestTemplate client;
     private final Executor apiCallExecutor;
-    private final String hostname;
+    private final String indianGodsServiceHostname;
 
-    IndianGodsServiceImpl(final RestTemplate client, final Executor apiCallExecutor, final String hostname) {
+    public IndianGodsServiceImpl(final RestTemplate client,
+                                 final Executor apiCallExecutor,
+                                 final String indianGodsServiceHostname) {
         this.client = client;
         this.apiCallExecutor = apiCallExecutor;
-        this.hostname = hostname;
+        this.indianGodsServiceHostname = indianGodsServiceHostname;
     }
 
     /**
@@ -44,10 +46,9 @@ public class IndianGodsServiceImpl implements IndianGodsService {
 
         return CompletableFuture.supplyAsync(() -> {
 
-            final ParameterizedTypeReference<List<String>> type = new ParameterizedTypeReference<>() {
-            };
+            final ParameterizedTypeReference<List<String>> type = new ParameterizedTypeReference<>() {};
 
-            final var either = getURI(hostname);
+            final var either = getURI(indianGodsServiceHostname);
 
             if (either.isRight()) {
                 return client.exchange(
