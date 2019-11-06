@@ -9,15 +9,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static java.util.Collections.emptyList;
-import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toList;
 
 /**
  * {@inheritDoc}
@@ -45,42 +44,44 @@ public class TopMahabharataGodsImpl implements TopMahabharataGods {
     @Override
     public List<God> getTopMahabharataGods() {
 
-        final var indianGods = getValidGods();
         final var mahabharataContent = mahabharataDataSource.getMahabharataBook();
+        final var indianGods = indianGodsService.getGodList();
 
-        return indianGods.thenCombine(mahabharataContent, (gods, mahabharata) -> gods.stream()
-                   .collect(toMap(Function.identity(), s -> countAppearances(s, mahabharata)))
-                   .entrySet().stream()
-                   .map( e ->  new God(e.getKey(), e.getValue().join()))
-                   .collect(Collectors.toList()))
-                .join()
-                .stream()
-                .sorted(Comparator.comparingLong(God::getHitCount).reversed())
-                .limit(3)
-                .collect(Collectors.toUnmodifiableList());
+        return mahabharataContent.thenCombine(indianGods, (mahabharata, maybeGods) -> maybeGods.map(
+                gods -> checkGodsAndCount(gods, mahabharata)
+                        .stream()
+                        .map(CompletableFuture::join)
+                        .filter(Optional::isPresent)
+                        .map(Optional::get)
+                        .sorted(Comparator.comparingLong(God::getHitCount).reversed())
+                        .limit(3)
+                        .collect(Collectors.toUnmodifiableList())
+                ).orElse(Collections.emptyList())
+        ).join();
 
     }
 
-    private CompletableFuture<List<String>> getValidGods() {
+    private List<CompletableFuture<Optional<God>>> checkGodsAndCount(final List<String> gods, final String mahabharata) {
 
-        return indianGodsService.getGodList()
-                .thenApply(gods -> gods.map(l -> {
+        return gods.stream()
+                .map(god -> indianGodService.isValidIndianGod(god)
+                        .thenCompose(valid -> checkValidAndCount(god, valid, mahabharata)))
+                .collect(toList());
 
-                    final var godsList = l.stream()
-                            .collect(toMap(Function.identity(), indianGodService::isValidIndianGod));
-
-                    return godsList.entrySet().stream()
-                            .filter(e -> e.getValue().join())
-                            .map(Map.Entry::getKey)
-                            .collect(Collectors.toList());
-
-                }).orElse(emptyList()));
     }
 
-    private CompletableFuture<Integer> countAppearances(final String god, final String mahabharata) {
+    private CompletableFuture<Optional<God>> checkValidAndCount(final String god,
+                                                                final boolean valid,
+                                                                final String mahabharata) {
+
+        return valid ? countAppearances(god, mahabharata) : CompletableFuture.completedFuture(Optional.empty());
+
+    }
+
+    private CompletableFuture<Optional<God>> countAppearances(final String god, final String mahabharata) {
         return CompletableFuture.supplyAsync(() -> {
             LOG.info("Calculating the appearances for god: {}", god);
-            return StringUtils.countMatches(mahabharata, god);
+            return Optional.of(new God(god, StringUtils.countMatches(mahabharata, god)));
         });
     }
 
