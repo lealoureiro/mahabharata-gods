@@ -12,11 +12,11 @@ The goal of the project/challenge is to explore feature of **CompletableFutures*
 ## Build
 
 ```bash
-mvn clean install
+./mvnw clean install
 ```
 
 ## Run
 
 ```bash
-mvn spring-boot:run
+./mvnw spring-boot:run
 ```
