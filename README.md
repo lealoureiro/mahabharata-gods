@@ -20,3 +20,10 @@ The goal of the project/challenge is to explore feature of **CompletableFutures*
 ```bash
 ./mvnw spring-boot:run
 ```
+
+## Docker
+
+```bash
+docker build -t mahabharata-gods .
+docker run -p8080:8080 mahabharata-gods:latest
+```
