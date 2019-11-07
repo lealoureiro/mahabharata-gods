@@ -25,11 +25,11 @@ public class TopGodsResource {
     }
 
     @RequestMapping(value = "/top-gods", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseEntity<List<God>> topGods() {
+    public ResponseEntity<List<God>> topGods() {
 
         LOG.info("Requesting top gods presented in Mahabharata.");
 
-        var gods = topMahabharataGods.getTopMahabharataGods();
+        final var gods = topMahabharataGods.getTopMahabharataGods();
 
         return ResponseEntity.ok().body(gods);
 

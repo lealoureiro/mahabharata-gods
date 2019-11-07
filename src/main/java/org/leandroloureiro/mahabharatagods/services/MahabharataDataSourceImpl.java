@@ -45,7 +45,13 @@ public class MahabharataDataSourceImpl implements MahabharataDataSource {
 
             if (uri.isRight()) {
 
-                return restTemplate.getForObject(uri.get(), String.class);
+                final var data = restTemplate.getForObject(uri.get(), String.class);
+
+                final var size = Objects.nonNull(data) ? data.getBytes().length : 0;
+
+                LOG.info("Loaded Mahabharata Book, size: {} bytes.", size);
+
+                return data;
 
             } else {
 

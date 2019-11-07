@@ -26,7 +26,7 @@ public class MainConfiguration {
     }
 
     @Bean
-    public String mahabharataDataSourceHostname(@Value("${indiangod.service.hostname}") final String mahabharataDataSourceHostname) {
+    public String mahabharataDataSourceHostname(@Value("${mahabharata.service.hostname}") final String mahabharataDataSourceHostname) {
         return mahabharataDataSourceHostname;
     }
 
@@ -39,7 +39,7 @@ public class MainConfiguration {
     public Executor apiCallExecutor() {
 
         final var factory = new ThreadFactoryBuilder()
-                .setNameFormat("API Call Worker Thread %d")
+                .setNameFormat("API Worker %d")
                 .build();
 
         return Executors.newFixedThreadPool(10, factory);

@@ -47,7 +47,7 @@ public class TopMahabharataGodsImpl implements TopMahabharataGods {
         final var mahabharataContent = mahabharataDataSource.getMahabharataBook();
         final var indianGods = indianGodsService.getGodList();
 
-        return mahabharataContent.thenCombine(indianGods, (mahabharata, maybeGods) -> maybeGods.map(
+        return mahabharataContent.thenCombineAsync(indianGods, (mahabharata, maybeGods) -> maybeGods.map(
                 gods -> checkGodsAndCount(gods, mahabharata)
                         .stream()
                         .map(CompletableFuture::join)

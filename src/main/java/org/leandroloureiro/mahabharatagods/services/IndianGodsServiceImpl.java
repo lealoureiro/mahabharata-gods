@@ -46,12 +46,16 @@ public class IndianGodsServiceImpl implements IndianGodsService {
 
         return CompletableFuture.supplyAsync(() -> {
 
-            final ParameterizedTypeReference<List<String>> type = new ParameterizedTypeReference<>() {};
+            final ParameterizedTypeReference<List<String>> type = new ParameterizedTypeReference<>() {
+            };
 
             final var either = getURI(indianGodsServiceHostname);
 
+            LOG.info("Fetching gods...");
+
+            final List<String> gods;
             if (either.isRight()) {
-                return client.exchange(
+                gods = client.exchange(
                         either.get(),
                         HttpMethod.GET,
                         new HttpEntity<>(type),
@@ -59,8 +63,12 @@ public class IndianGodsServiceImpl implements IndianGodsService {
                 ).getBody();
 
             } else {
-                return new ArrayList<String>();
+                gods = new ArrayList<>();
             }
+
+            LOG.info("Loaded {} gods.", Objects.nonNull(gods) ? gods.size() : 0);
+
+            return gods;
 
         }, apiCallExecutor).handle((response, e) -> {
             if (Objects.isNull(e)) {

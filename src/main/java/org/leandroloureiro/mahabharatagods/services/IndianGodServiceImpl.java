@@ -41,6 +41,8 @@ public class IndianGodServiceImpl implements IndianGodService {
     public CompletableFuture<Boolean> isValidIndianGod(final String indianGod) {
         return CompletableFuture.supplyAsync(() -> {
 
+            LOG.info("Checking the validity of God {}.", indianGod);
+
             final var uri = getURI(indianGodServiceHostname, indianGod);
 
             if (uri.isRight()) {
