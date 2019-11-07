@@ -7,7 +7,8 @@ The goal of the project/challenge is to explore feature of **CompletableFutures*
 ## Pre-requisites
 
 - Java 11
-- Maven
+- Docker (Optional)
+- httpie (Optional)
 
 ## Build
 
@@ -26,4 +27,9 @@ The goal of the project/challenge is to explore feature of **CompletableFutures*
 ```bash
 docker build -t mahabharata-gods .
 docker run -p8080:8080 mahabharata-gods:latest
+```
+
+## Test 
+```bash
+http :8080/top-gods
 ```
